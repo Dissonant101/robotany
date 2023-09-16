@@ -2,7 +2,7 @@ import requests
 import cohere
 
 input = {
-    'text': 'John went to the mall. Can you increase the moisture of Raha, my plant?',
+    'text': 'Water my plant Jerry',
     'categories': [
         'Update on plant',
         'Get status',
@@ -13,13 +13,13 @@ input = {
     ]
 }
 
-res = requests.post(url='http://0.0.0.0:3000/categorize', json=input)
+# If category is update on plant or get status, make sql command with name extractor
+# If category is water plant or increase moisture, water the plant
+
+res = requests.post(url='http://0.0.0.0:3006/categorize', json=input)
 print(res.json())
 
-# Paste your API key here. Remember to not share publicly
 api_key = 'xe7ybPghnwKjETBI3ow62GfmwwPU6mXcTDIA2Z59'
-
-# Create and retrieve a Cohere API key from os.cohere.ai
 co = cohere.Client(api_key)
 
 name_examples = [
@@ -67,3 +67,13 @@ try:
     print(extracted_text)
 except Exception as e:
     print('ERROR: ', e)
+
+## If category is unknown, just process with cohere ##
+# response = co.chat(
+# 	input.get("text"), 
+# 	model="command", 
+# 	temperature=0.9
+# )
+
+# answer = response.text
+# print(answer)
