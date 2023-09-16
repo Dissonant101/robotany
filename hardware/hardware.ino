@@ -22,8 +22,11 @@ WiFiMulti wifiMulti;
 const int pollDelay = 50;
 
 // 0 = not spinning, 1 = clockwise, 2 = counter-clockwise
-const int motorState = 0; 
-const int timeUntilSwitchMotorState = 1000;
+int motorState = 0;
+int timeUntilSwitchMotorState = 1000;
+
+int previousLightLevel = 0;
+int previousMoisture = 0;
 
 void setup() {
     Serial.begin(115200);
@@ -41,7 +44,7 @@ void updateMotor() {
   if (motorState == 0) {
     digitalWrite(GPIO16, LOW);
     digitalWrite(GPIO17, LOW);
-    return
+    return;
   } else if (motorState == 1) {
     digitalWrite(GPIO16, HIGH);
     digitalWrite(GPIO17, LOW);
@@ -49,9 +52,9 @@ void updateMotor() {
     digitalWrite(GPIO16, LOW);
     digitalWrite(GPIO17, HIGH);
   }
-  timeUntilSwitchMotorState -= pollDelay
+  timeUntilSwitchMotorState -= pollDelay;
   if (timeUntilSwitchMotorState <= 0) {
-    motorState = (motorState + 1) % 3
+    motorState = (motorState + 1) % 3;
     timeUntilSwitchMotorState = 1000;
   }
 }
@@ -59,14 +62,18 @@ void updateMotor() {
 void loop() {
     updateMotor();
     if ((wifiMulti.run() == WL_CONNECTED)) {
-        int humidity = analogRead(ADC5);
-        int light = analogRead(ADC0);
-        Serial.print("H:");
-        Serial.print(humidity);
+        int lightLevel = analogRead(ADC0);
+        int moisture = analogRead(ADC5);
+        int smoothedLightLevel = (previousLightLevel + lightLevel) / 2;
+        int smoothedMoisture = (previousMoisture + moisture) / 2;
+        Serial.print("L:");
+        Serial.print(smoothedLightLevel);
         delay(10);
         //      Serial.println("");
-        Serial.print(" L:");
-        Serial.println(light);
+        Serial.print(" M:");
+        Serial.println(moisture);
+        previousLightLevel = smoothedLightLevel;
+        previousMoisture = smoothedMoisture;
         //      HTTPClient http;
         //      http.begin("https://hackthenorth2022.uc.r.appspot.com/api/velocities");
         //      http.addHeader("Content-Type", "application/json");
