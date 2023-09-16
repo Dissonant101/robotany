@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 
 const port = 3000;
@@ -8,16 +9,13 @@ const Sequelize = require('sequelize-cockroachdb');
 
 const fs = require('fs');
 
-var sequelize = new Sequelize(process.env.DATABASE_URL)
+const sequelize = new Sequelize(process.env.DATABASE_URL);
 
 const Plant = sequelize.define("plants", {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-    },
-    timestamp: {
-        type: Sequelize.STRING
     },
     lightLevel: {
         type: Sequelize.DECIMAL
@@ -27,18 +25,18 @@ const Plant = sequelize.define("plants", {
     }
 });
 
-app.post('/api/plants', function (req, res) {
+app.post('/api/plants', bodyParser.json(), function (req, res) {
     Plant.sync({
         force: false,
     })
-        .then(function () {
-            return Plant.bulkCreate([
+        .then(async function () {
+            res.send(await Plant.bulkCreate([
                 {
                     timestamp: req.body.timestamp,
                     lightLevel: req.body.lightLevel,
                     moistureLevel: req.body.moistureLevel
                 },
-            ]);
+            ]));
         })
 
         .catch(function (err) {
@@ -50,10 +48,16 @@ app.get('/api/plants', (req, res) => {
     Plant.sync({
         force: false,
     })
-        .then(function () {
-            return Plant.findAll();
+        .then(async function () {
+            plantData = await Plant.findAll();
+            console.log(plantData);
+            res.send(plantData);
         })
 })
+
+app.delete('/api/plants', async (req, res) => {
+    res.send(Plant.drop());
+});
 
 app.listen(port, host, () => {
     console.log(`Server started at ${host} port ${port}`);
