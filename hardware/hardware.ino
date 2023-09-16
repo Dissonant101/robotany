@@ -15,9 +15,15 @@ sure if it's installed by default or not
 
 const int ADC0 = 36;
 const int ADC5 = 33;
+const int GPIO16 = 16;
+const int GPIO17 = 17;
 WiFiMulti wifiMulti;
 
 const int pollDelay = 50;
+
+// 0 = not spinning, 1 = clockwise, 2 = counter-clockwise
+const int motorState = 0; 
+const int timeUntilSwitchMotorState = 1000;
 
 void setup() {
     Serial.begin(115200);
@@ -26,9 +32,32 @@ void setup() {
     wifiMulti.addAP("HackTheNorth", "HTNX2023");
     delay(500);
     Serial.println("Wifi Connected");
+
+    pinMode(GPIO16, OUTPUT);
+    pinMode(GPIO17, OUTPUT);
+}
+
+void updateMotor() {
+  if (motorState == 0) {
+    digitalWrite(GPIO16, LOW);
+    digitalWrite(GPIO17, LOW);
+    return
+  } else if (motorState == 1) {
+    digitalWrite(GPIO16, HIGH);
+    digitalWrite(GPIO17, LOW);
+  } else if (motorState == 2) {
+    digitalWrite(GPIO16, LOW);
+    digitalWrite(GPIO17, HIGH);
+  }
+  timeUntilSwitchMotorState -= pollDelay
+  if (timeUntilSwitchMotorState <= 0) {
+    motorState = (motorState + 1) % 3
+    timeUntilSwitchMotorState = 1000;
+  }
 }
 
 void loop() {
+    updateMotor();
     if ((wifiMulti.run() == WL_CONNECTED)) {
         int humidity = analogRead(ADC5);
         int light = analogRead(ADC0);
