@@ -14,8 +14,10 @@ sure if it's installed by default or not
 #include <WiFiMulti.h>
 
 const int ADC0 = 36;
-const int ADC7 = 35;
+const int ADC5 = 33;
 WiFiMulti wifiMulti;
+
+const int pollDelay = 50;
 
 void setup() {
     Serial.begin(115200);
@@ -28,13 +30,13 @@ void setup() {
 
 void loop() {
     if ((wifiMulti.run() == WL_CONNECTED)) {
-        int humidity = analogRead(ADC0);
-        int light = analogRead(ADC7);
-        Serial.println("H:");
-        Serial.println(humidity);
+        int humidity = analogRead(ADC5);
+        int light = analogRead(ADC0);
+        Serial.print("H:");
+        Serial.print(humidity);
         delay(10);
         //      Serial.println("");
-        Serial.println("L:");
+        Serial.print(" L:");
         Serial.println(light);
         //      HTTPClient http;
         //      http.begin("https://hackthenorth2022.uc.r.appspot.com/api/velocities");
@@ -59,7 +61,7 @@ void loop() {
         //      }
         //
         //      http.end();
-        delay(1000);
+        delay(pollDelay);
     } else {
         Serial.print(".");
     }
