@@ -21,8 +21,7 @@ const Home = () => {
 	}])
 
 	async function doSomething(input){
-		messages.push({message: input, direction: "outgoing"})
-		setMessages(messages)
+		setMessages([...messages, {message: input, direction: "outgoing"}])
 		let output = ""
 
 		fetch('http://127.0.0.1:5000/api?input=' + input)
@@ -36,7 +35,7 @@ const Home = () => {
 					if(data.response.error) {
 						output = data.response.error
 					} else {
-						output = 'Giving some water to our friend!!'
+						output = `Giving some water to our friend!!`
 					}
 					break;
 				case 'not_water':
@@ -51,22 +50,26 @@ const Home = () => {
 					break;
 				case 'get_specific':
 					if (data.response.moistureValue < 2000){
-						output += 'Your plant needs more water! '
+						output += `${data.response.name} needs more water! `
 					}
 					else {
-						output += 'Your plant does not need any more water. '
+						output += `${data.response.name} does not need any more water. `
 					}
 
+					output += `Their moisture is currently at ${Math.round(100 - data.response.moistureValue / 4096)}%. `
+
 					if (data.response.sunExposure < 500){
-						output += 'Your plant needs more sun!'
+						output += `${data.response.name} needs more sun!`
 					}
 					else {
-						output += 'Consider putting your plant in the shade during sunny hours.'
+						output += `Consider putting ${data.response.name} in the shade during sunny hours. `
 					}
+
+					output += `Their sun light exposure is currently at ${Math.round(100 - data.response.moistureValue / 1024)}%. `
 
 					break;
 			}
-			setMessages([...messages, {message: output, direction: "incoming"}])
+			setMessages([...messages, {message: input, direction: "outgoing"}, {message: output, direction: "incoming"}])
 		})
 		
 	}
