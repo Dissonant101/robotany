@@ -54,12 +54,12 @@ void updateMotor() {
       
   if (httpCode > 0) {
     String payload = http.getString();
-    Serial.print("updateMotor: Received response from server");
+    Serial.println("updateMotor: Received response from server");
     JSONVar data = JSON.parse(payload);
     boolean isWatering = data[0]["isWatering"];
     if (previousIsWatering && !isWatering) {
       Serial.println("updateMotor: Entering watering state");
-      myServo.writeMicroseconds(1500);
+      myServo.writeMicroseconds(2000);
       previousIsWatering = isWatering;
     } else if (!previousIsWatering && isWatering) {
       Serial.println("updateMotor: Entering not watering state");
@@ -91,7 +91,7 @@ void sendData(int lightLevel, int moistureLevel) {
   int httpCode = http.POST(payload);
 
   if(httpCode > 0) {
-    Serial.print("sendData: Posted data successfully");
+    Serial.println("sendData: Posted data successfully");
   } else {
     Serial.print("sendData: Encountered error ");
     Serial.print(httpCode);
@@ -103,7 +103,7 @@ void sendData(int lightLevel, int moistureLevel) {
 
 
 void loop() {
-  Serial.print("=== Next loop ===");
+  Serial.println("=== Next loop ===");
   if ((wifiMulti.run() == WL_CONNECTED)) {
     int lightLevel = analogRead(ADC0);
     int moistureLevel = analogRead(ADC5);
