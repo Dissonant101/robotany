@@ -23,7 +23,7 @@ const int ADC5 = 33;
 const int GPIO16 = 16;
 const int GPIO17 = 17;
 
-const int pollDelay = 4000;
+const int pollDelay = 600;
 
 WiFiMulti wifiMulti;
 
@@ -57,12 +57,12 @@ void updateMotor() {
     Serial.println("updateMotor: Received response from server");
     JSONVar data = JSON.parse(payload);
     boolean isWatering = data[0]["isWatering"];
-    if (previousIsWatering && !isWatering) {
-      Serial.println("updateMotor: Entering watering state");
+    if (!isWatering) {
+      Serial.println("updateMotor: Entering not watering state");
       myServo.writeMicroseconds(2000);
       previousIsWatering = isWatering;
-    } else if (!previousIsWatering && isWatering) {
-      Serial.println("updateMotor: Entering not watering state");
+    } else if (isWatering) {
+      Serial.println("updateMotor: Entering watering state");
       myServo.writeMicroseconds(1000);
       previousIsWatering = isWatering;
     } else {
