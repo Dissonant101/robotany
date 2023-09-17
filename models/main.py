@@ -18,7 +18,9 @@ def makeRequest(input):
     elif name:
         name = name[1:]
 
+    print(f'Making a {identified} to {name}')
+
     return roach.inputToSQL(identified, name)
 
-print(makeRequest('Please water my plant Jerry!!'))
-print(makeRequest('How is Jerry doing?'))
+# print(makeRequest('Please water my plant Jerry!!'))
+# print(makeRequest('How is Jerry doing?'))

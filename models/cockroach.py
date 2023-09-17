@@ -74,7 +74,10 @@ def inputToSQL(category, name = ''):
             res[key]['moistureValue'] = average(res[key]['moistureValue'])
             res[key]['sunExposure'] = average(res[key]['sunExposure'])
         
-        return [res[key] for key in res]
+        return {
+            'data': [res[key] for key in res],
+            'category': 'get_all'
+        }
     
     if category == 'get_specific':
         sql = ['SELECT * ',
@@ -96,9 +99,15 @@ def inputToSQL(category, name = ''):
             'endTime': max(indiv[3] for indiv in dataRecieved),
             'moistureValue': average([indiv[8] for indiv in dataRecieved]),
             'sunExposure': average([indiv[7] for indiv in dataRecieved]),
+            'category': 'get_specific'
         }
         
         return res
     
     if category in ('water', 'not_water'):
-        return updateRow(f'UPDATE public.plants SET "isWatering"= %s WHERE name= %s', (category == 'water', name))
+        updateRow(f'UPDATE public.plants SET "isWatering"= %s WHERE name= %s', (category == 'water', name))
+
+        return {
+            'category': category,
+            'name': name
+        }

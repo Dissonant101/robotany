@@ -1,6 +1,6 @@
 import requests
 
-PORT = 3006
+PORT = 3007
 
 dictionary = {'Update on plant': 'get_specific', 
               'Get status': 'get_specific', 
@@ -26,4 +26,5 @@ def categorize(input):
         return 'get_all'
     # print()
     return dictionary[max(res, key=res.get)]
+
 
