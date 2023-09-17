@@ -1,0 +1,18 @@
+service: 'service.py:svc'
+name: transformers-nlp-service
+labels:
+  owner: bentoml-team
+  project: transformers-nlp-service
+include:
+  - '*.py'
+  - '/tests'
+  - 'pyproject.toml'
+  - '/config'
+python:
+  requirements_txt: requirements/tests.txt
+docker:
+  dockerfile_template: ./Dockerfile.template
+  system_packages:
+    - 'git'
+  env:
+    BENTOML_CONFIG: ./config/default.yaml
