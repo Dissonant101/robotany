@@ -24,3 +24,7 @@ def makeRequest(input):
 
 # print(makeRequest('Please water my plant Jerry!!'))
 # print(makeRequest('How is Jerry doing?'))
+
+# 1 terminal: bentoml serve --port 3007 (make sure to control C when exiting!! do not let it end by itself!)
+# 2 terminal: npm start
+# 3 terminal: flask --app api run

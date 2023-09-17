@@ -38,9 +38,16 @@ def updateRow(sql, values):
     if not CURSOR:
         return
     
-    CURSOR.execute(sql, values)
-    
-    CONN.commit()
+    try:
+        CURSOR.execute(sql, values)
+        
+        CONN.commit()
+
+        return True
+
+    except:
+        return False
+
     
 def inputToSQL(category, name = ''):
     
@@ -105,7 +112,12 @@ def inputToSQL(category, name = ''):
         return res
     
     if category in ('water', 'not_water'):
-        updateRow(f'UPDATE public.plants SET "isWatering"= %s WHERE name= %s', (category == 'water', name))
+        print(name)
+        if not updateRow(f'UPDATE public.plants SET "isWatering"= %s WHERE name= %s', (category == 'water', name)):
+            return {
+                'category': category,
+                'error': 'Had an issue working with the water! Please try again.'
+            }
 
         return {
             'category': category,

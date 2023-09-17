@@ -1,6 +1,6 @@
 import requests
 
-PORT = 3007
+PORT = 3000
 
 dictionary = {'Update on plant': 'get_specific', 
               'Get status': 'get_specific', 

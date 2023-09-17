@@ -28,31 +28,40 @@ const Home = () => {
 		fetch('http://127.0.0.1:5000/api?input=' + input)
 		.then(response => response.json())
 		.then(data => {
+			console.log(data.response)
 			console.log(data.response.category)
 
 			switch(data.response.category) {
 				case 'water':
-					output = 'Giving some water to our friend!!'
+					if(data.response.error) {
+						output = data.response.error
+					} else {
+						output = 'Giving some water to our friend!!'
+					}
 					break;
 				case 'not_water':
-					output = 'Taking away some water to our friend!!'
+					if(data.response.error) {
+						output = data.response.error
+					} else {
+						output = 'Taking away some water to our friend!!'
+					}
 					break;
 				case 'get_all':
 					output = 'Your plants are doing well!'
 					break;
 				case 'get_specific':
 					if (data.response.moistureValue < 2000){
-						output = 'Your plant needs more water!'
+						output += 'Your plant needs more water! '
 					}
 					else {
-						output = 'Your plant does not need any more water'
+						output += 'Your plant does not need any more water. '
 					}
 
 					if (data.response.sunExposure < 500){
-						output = 'Your plant needs more sun!'
+						output += 'Your plant needs more sun!'
 					}
 					else {
-						output = 'Consider putting your plant in the shade during sunny hours.'
+						output += 'Consider putting your plant in the shade during sunny hours.'
 					}
 
 					break;
