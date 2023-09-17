@@ -1,3 +1,5 @@
+https://github.com/Dissonant101/robotany/assets/39448504/a07b76f8-04e5-417d-a8c9-fd22152eb2d6
+
 ## Inspiration
 One issue that we all seem to face is interpreting large sensor-based datasets. Whether it be financial or environmental data, we saw an opportunity to use LLMs to allow for better understanding of big data. As a proof of concept, taking care of a house plant or gardens was interesting because we could collect data and take actions based on physical metrics like soil moisture and sunlight. We were then inspired to take managing plants to the next level by being able to talk to the data you just collected in a fun way, like asking how each of your plants are doing. This is how RoBotany came to be.
 
