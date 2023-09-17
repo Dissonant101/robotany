@@ -4,7 +4,8 @@ How to upload this program to an ESP32:
 "https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json"
 2. Select the board "Node32s" in Tools > Board > ESP32 Arduino > Node23s (or
 whatever model of the board we're using)
-3. You may need to install the Wifi library through the Library Manager. I'm not
+3. Download the ESP32Servo library.
+4. You may need to install the Wifi library through the Library Manager. I'm not
 sure if it's installed by default or not
 */
 
@@ -12,6 +13,9 @@ sure if it's installed by default or not
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
+#include <ESP32Servo.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
 
 const int ADC0 = 36;
 const int ADC5 = 33;
@@ -22,40 +26,39 @@ WiFiMulti wifiMulti;
 const int pollDelay = 50;
 
 // 0 = not spinning, 1 = clockwise, 2 = counter-clockwise
-int motorState = 0;
-int timeUntilSwitchMotorState = 1000;
+int motorState = 1;
+int timeUntilSwitchMotorState = 5000;
 
 int previousLightLevel = 0;
 int previousMoisture = 0;
 
+Servo myServo;
+
 void setup() {
+    WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
     Serial.begin(115200);
     Serial.println("Connecting to wifi...");
 
     wifiMulti.addAP("HackTheNorth", "HTNX2023");
     delay(500);
     Serial.println("Wifi Connected");
-
-    pinMode(GPIO16, OUTPUT);
-    pinMode(GPIO17, OUTPUT);
+    
+    myServo.attach(GPIO16);
+    myServo.write(0);
 }
 
 void updateMotor() {
-  if (motorState == 0) {
-    digitalWrite(GPIO16, LOW);
-    digitalWrite(GPIO17, LOW);
-    return;
-  } else if (motorState == 1) {
-    digitalWrite(GPIO16, HIGH);
-    digitalWrite(GPIO17, LOW);
-  } else if (motorState == 2) {
-    digitalWrite(GPIO16, LOW);
-    digitalWrite(GPIO17, HIGH);
-  }
   timeUntilSwitchMotorState -= pollDelay;
   if (timeUntilSwitchMotorState <= 0) {
-    motorState = (motorState + 1) % 3;
-    timeUntilSwitchMotorState = 1000;
+    motorState = (motorState + 1) % 2;
+    timeUntilSwitchMotorState = 5000;
+    if (motorState == 0) {
+      Serial.println("Motor state 0");
+      myServo.write(0);
+    } else if (motorState == 1) {
+      Serial.println("Motor state 1");
+      myServo.write(90);
+    }
   }
 }
 
