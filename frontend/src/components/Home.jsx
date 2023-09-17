@@ -48,7 +48,7 @@ function outgoingMessage() {
 		<MessageInput placeholder="Type message here" />
 		</ChatContainer>
 	</div>;
-	}
+}
 
 function incomingMessage() {
 	<div style={{ position: "relative", height: "500px" }}>
